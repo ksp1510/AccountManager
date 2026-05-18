@@ -1,0 +1,72 @@
+@model IEnumerable<AccountManager.Models.Account>
+@{
+    ViewData["Title"] = "Find Account";
+}
+
+<div class="page-header">
+    <h1>🔍 Find Account</h1>
+    <nav class="top-nav">
+        <a href="@Url.Action("Index")">← Back to List</a>
+        <a href="@Url.Action("Logs")">📄 View Logs</a>
+    </nav>
+</div>
+
+<section class="card">
+    <form method="get" asp-action="Find">
+        <div class="form-row search-row">
+            <input type="text"
+                   name="query"
+                   class="form-control"
+                   value="@ViewBag.Query"
+                   placeholder="Enter account name to search…"
+                   autofocus />
+            <button type="submit" class="btn btn-primary">Search</button>
+        </div>
+    </form>
+</section>
+
+@if (ViewBag.Query != null)
+{
+    <section class="card">
+        <h2>
+            Results for "<strong>@ViewBag.Query</strong>"
+            <span class="badge">@Model.Count()</span>
+        </h2>
+
+        @if (!Model.Any())
+        {
+            <p class="empty">No accounts matched "<strong>@ViewBag.Query</strong>".</p>
+        }
+        else
+        {
+            <table class="data-table">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Account Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var account in Model)
+                    {
+                        <tr>
+                            <td>@account.Id</td>
+                            <td><strong>@account.AccountName</strong></td>
+                            <td><a href="mailto:@account.Email">@account.Email</a></td>
+                            <td>@(account.Contact ?? "—")</td>
+                            <td class="date">@account.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                <a href="@Url.Action("Details", new { id = account.Id })" class="btn-sm btn-info">View</a>
+                                <a href="@Url.Action("Edit",    new { id = account.Id })" class="btn-sm btn-edit">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </section>
+}

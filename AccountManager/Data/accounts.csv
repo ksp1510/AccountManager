@@ -1,0 +1,15 @@
+Account Name,Email,Contact
+Acme Corporation,contact@acmecorp.com,+1-555-010-1234
+Blue Wave Tech,admin@bluewave.io,
+Horizon Dynamics,info@horizondyn.com,+1-555-030-5678
+Stellar Solutions,hello@stellarsol.net,
+Nova Systems,support@novasys.org,+1-555-050-9012
+Apex Ventures,reach@apexventures.com,
+Bright Minds Inc,team@brightminds.edu,+1-555-070-3456
+CloudForge Ltd,ops@cloudforge.dev,
+Pacific Traders,sales@pacifictraders.biz,+1-555-090-7890
+Summit Analytics,data@summitanalytics.ai,
+Redwood Partners,partners@redwoodgrp.com,+1-555-110-2345
+Urban Digital,hi@urbandigital.io,
+invalid-no-email,,+1-555-000-0000
+Frontier Labs,NOT_AN_EMAIL,
