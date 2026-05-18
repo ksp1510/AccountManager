@@ -1,0 +1,124 @@
+@model IEnumerable<AccountManager.Models.Account>
+@{
+    ViewData["Title"] = "Account Manager – Import & List";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">📋 Accounts</h2>
+    <div>
+        <a asp-action="Find" class="btn btn-outline-primary btn-sm me-1">🔍 Find</a>
+        <a asp-action="Logs" class="btn btn-outline-secondary btn-sm">📄 Logs</a>
+    </div>
+</div>
+
+@if (TempData["ImportResult"] != null)
+{
+    <div class="alert alert-success alert-dismissible fade show" role="alert">
+        ✅ @TempData["ImportResult"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["ImportErrors"] != null)
+{
+    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+        ⚠️ Row errors: @TempData["ImportErrors"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+        ❌ @TempData["Error"]
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+}
+
+<!-- Import Form -->
+<div class="card mb-4 shadow-sm">
+    <div class="card-header fw-semibold">⬆ Import CSV</div>
+    <div class="card-body">
+        <form asp-action="Import" method="post">
+            <div class="mb-3">
+                <label for="csvFilePath" class="form-label fw-semibold">CSV File Path</label>
+                <input type="text"
+                       id="csvFilePath"
+                       name="csvFilePath"
+                       class="form-control"
+                       value="@ViewBag.DefaultCsvPath"
+                       placeholder="e.g. C:\data\accounts.csv"
+                       required />
+                <div class="form-text">Enter the full or relative path to the CSV file on the server.</div>
+            </div>
+            <button type="submit" class="btn btn-primary">⬆ Run Import</button>
+        </form>
+    </div>
+</div>
+
+<!-- Account Table -->
+<div class="card shadow-sm mb-4">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <span class="fw-semibold">All Accounts</span>
+        <span class="badge bg-primary rounded-pill">@Model.Count()</span>
+    </div>
+    <div class="card-body p-0">
+        @if (!Model.Any())
+        {
+            <p class="text-muted fst-italic p-3 mb-0">No accounts yet. Import a CSV file above.</p>
+        }
+        else
+        {
+            <table class="table table-hover table-striped mb-0">
+                <thead class="table-light">
+                    <tr>
+                        <th>#</th>
+                        <th>Account Name</th>
+                        <th>Email</th>
+                        <th>Contact</th>
+                        <th>Created</th>
+                        <th>Updated</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var account in Model)
+                    {
+                        <tr>
+                            <td class="text-muted">@account.Id</td>
+                            <td><strong>@account.AccountName</strong></td>
+                            <td><a href="mailto:@account.Email">@account.Email</a></td>
+                            <td>
+                                @if (account.Contact != null)
+                                {
+                                    @account.Contact
+                                }
+                                else
+                                {
+
+                                    <span class="text-muted">—</span>
+                                }
+                            </td>
+                            <td class="text-muted small">@account.CreatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td class="text-muted small">@account.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                            <td>
+                                <a asp-action="Details" asp-route-id="@account.Id" class="btn btn-sm btn-outline-info">View</a>
+                                <a asp-action="Edit" asp-route-id="@account.Id" class="btn btn-sm btn-outline-warning">Edit</a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        }
+    </div>
+</div>
+
+<!-- Log paths info -->
+<div class="card shadow-sm">
+    <div class="card-header fw-semibold">📁 Log File Locations</div>
+    <div class="card-body">
+        <table class="table table-sm mb-0">
+            <tr><td class="fw-semibold text-success">✅ Success Log</td><td><code>@ViewBag.SuccessLogPath</code></td></tr>
+            <tr><td class="fw-semibold text-danger">❌ Error Log</td><td><code>@ViewBag.ErrorLogPath</code></td></tr>
+            <tr><td class="fw-semibold text-warning">🔄 Upserted Contact Log</td><td><code>@ViewBag.UpsertLogPath</code></td></tr>
+        </table>
+    </div>
+</div>

@@ -30,7 +30,7 @@ public class AccountController : Controller
     public async Task<IActionResult> Index()
     {
         var accounts = await _db.Accounts
-            .OrderBy(a => a.AccountName)
+            .OrderBy(a => a.Id)
             .ToListAsync();
 
         ViewBag.DefaultCsvPath = _config["CsvImport:DefaultFilePath"] ?? string.Empty;
@@ -61,7 +61,7 @@ public class AccountController : Controller
             $"Import complete — Total: {result.TotalRows} | " +
             $"Inserted: {result.Inserted} | " +
             $"Updated: {result.Updated} | " +
-            $"Contacts upserted: {result.ContactsUpserted} | " +
+            $"Contacts added: {result.ContactsUpserted} | " +
             $"Skipped: {result.Skipped}";
 
         if (result.Errors.Count > 0)

@@ -1,0 +1,38 @@
+@model AccountManager.Models.Account
+@{
+    ViewData["Title"] = $"Details – {Model.AccountName}";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">📌 Account Details</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Back to List</a>
+</div>
+
+<div class="card shadow-sm" style="max-width: 580px;">
+    <div class="card-body">
+        <dl class="row mb-0">
+            <dt class="col-sm-4 text-muted">ID</dt>
+            <dd class="col-sm-8">@Model.Id</dd>
+
+            <dt class="col-sm-4 text-muted">Account Name</dt>
+            <dd class="col-sm-8"><strong>@Model.AccountName</strong></dd>
+
+            <dt class="col-sm-4 text-muted">Email</dt>
+            <dd class="col-sm-8"><a href="mailto:@Model.Email">@Model.Email</a></dd>
+
+            <dt class="col-sm-4 text-muted">Contact</dt>
+            <dd class="col-sm-8">@(Model.Contact ?? "—")</dd>
+
+            <dt class="col-sm-4 text-muted">Created At</dt>
+            <dd class="col-sm-8 small text-muted">@Model.CreatedAt.ToString("yyyy-MM-dd HH:mm:ss") UTC</dd>
+
+            <dt class="col-sm-4 text-muted">Updated At</dt>
+            <dd class="col-sm-8 small text-muted">@Model.UpdatedAt.ToString("yyyy-MM-dd HH:mm:ss") UTC</dd>
+        </dl>
+        <hr />
+        <div class="d-flex gap-2">
+            <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-primary">✏️ Edit</a>
+            <a asp-action="Index" class="btn btn-secondary">← Back</a>
+        </div>
+    </div>
+</div>

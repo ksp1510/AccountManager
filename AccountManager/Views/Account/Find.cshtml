@@ -1,0 +1,82 @@
+@model IEnumerable<AccountManager.Models.Account>
+@{
+    ViewData["Title"] = "Find Account";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">🔍 Find Account</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Back to List</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-body">
+        <form method="get" asp-action="Find">
+            <div class="input-group">
+                <input type="text"
+                       name="query"
+                       class="form-control"
+                       value="@ViewBag.Query"
+                       placeholder="Enter account name to search…"
+                       autofocus />
+                <button type="submit" class="btn btn-primary">Search</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+@if (ViewBag.Query != null)
+{
+    <div class="card shadow-sm">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <span>Results for "<strong>@ViewBag.Query</strong>"</span>
+            <span class="badge bg-primary rounded-pill">@Model.Count()</span>
+        </div>
+        <div class="card-body p-0">
+            @if (!Model.Any())
+            {
+                <p class="text-muted fst-italic p-3 mb-0">No accounts matched "<strong>@ViewBag.Query</strong>".</p>
+            }
+            else
+            {
+                <table class="table table-hover table-striped mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th>#</th>
+                            <th>Account Name</th>
+                            <th>Email</th>
+                            <th>Contact</th>
+                            <th>Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var account in Model)
+                        {
+                            <tr>
+                                <td class="text-muted">@account.Id</td>
+                                <td><strong>@account.AccountName</strong></td>
+                                <td><a href="mailto:@account.Email">@account.Email</a></td>
+                                <td>
+                                    @if (account.Contact != null)
+                                    {
+                                        @account.Contact
+                                    }
+                                    else
+                                    {
+
+                                        <span class="text-muted">—</span>
+                                    }
+                                </td>
+                                <td class="text-muted small">@account.UpdatedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                                <td>
+                                    <a asp-action="Details" asp-route-id="@account.Id" class="btn btn-sm btn-outline-info">View</a>
+                                    <a asp-action="Edit" asp-route-id="@account.Id" class="btn btn-sm btn-outline-warning">Edit</a>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            }
+        </div>
+    </div>
+}

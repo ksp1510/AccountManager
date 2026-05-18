@@ -40,18 +40,46 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Account}/{action=Index}/{id?}");
 
-// ── Auto-migrate on startup (creates the Account table if missing) ────────────
+// ── Create database + Account table if they don't exist ──────────────────────
+
 using (var scope = app.Services.CreateScope())
 {
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
     try
     {
-        db.Database.Migrate();
+        // Step 1 — ensure the database itself exists.
+        db.Database.EnsureCreated();
+
+        // Step 2 — idempotent DDL: create the Account table only if missing.
+        db.Database.ExecuteSqlRaw(@"
+            IF NOT EXISTS (
+                SELECT 1 FROM INFORMATION_SCHEMA.TABLES
+                WHERE TABLE_SCHEMA = 'dbo' AND TABLE_NAME = 'Account'
+            )
+            BEGIN
+                CREATE TABLE [dbo].[Account] (
+                    [Id]          INT IDENTITY(1,1)  NOT NULL,
+                    [AccountName] NVARCHAR(200)       NOT NULL,
+                    [Email]       NVARCHAR(320)       NOT NULL,
+                    [Contact]     NVARCHAR(50)            NULL,
+                    [CreatedAt]   DATETIME2          NOT NULL
+                                  CONSTRAINT [DF_Account_CreatedAt] DEFAULT GETUTCDATE(),
+                    [UpdatedAt]   DATETIME2          NOT NULL
+                                  CONSTRAINT [DF_Account_UpdatedAt] DEFAULT GETUTCDATE(),
+                    CONSTRAINT [PK_Account] PRIMARY KEY CLUSTERED ([Id] ASC)
+                );
+
+                CREATE UNIQUE NONCLUSTERED INDEX [IX_Account_AccountName]
+                    ON [dbo].[Account] ([AccountName] ASC);
+            END
+        ");
+
+        logger.LogInformation("Database schema verified/created successfully.");
     }
     catch (Exception ex)
     {
-        var logger = scope.ServiceProvider.GetRequiredService<ILogger<Program>>();
-        logger.LogError(ex, "Database migration failed. Ensure SQL Server is running and the connection string is correct.");
+        logger.LogError(ex, "Database setup failed. Check your connection string in appsettings.json.");
     }
 }
 

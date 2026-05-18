@@ -131,11 +131,7 @@ public class CsvImportService
 
                     result.Inserted++;
 
-                    if (normalizedContact is not null)
-                    {
-                        await _log.LogUpsertedContactAsync(rec.AccountName.Trim(), null, normalizedContact);
-                        result.ContactsUpserted++;
-                    }
+                    
                 }
                 else
                 {

@@ -1,0 +1,29 @@
+@{
+    ViewData["Title"] = "Application Logs";
+}
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h2 class="mb-0">📄 Application Logs</h2>
+    <a asp-action="Index" class="btn btn-outline-secondary btn-sm">← Back to List</a>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold text-success">✅ Success Log <small class="text-muted fw-normal">(last 100 entries, newest first)</small></div>
+    <div class="card-body p-0">
+        <pre class="log-output log-success m-0 p-3">@ViewBag.SuccessLog</pre>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold text-danger">❌ Error Log <small class="text-muted fw-normal">(last 100 entries, newest first)</small></div>
+    <div class="card-body p-0">
+        <pre class="log-output log-error m-0 p-3">@ViewBag.ErrorLog</pre>
+    </div>
+</div>
+
+<div class="card shadow-sm mb-4">
+    <div class="card-header fw-semibold text-warning">🔄 Upserted Contact Log <small class="text-muted fw-normal">(last 100 entries, newest first)</small></div>
+    <div class="card-body p-0">
+        <pre class="log-output log-upsert m-0 p-3">@ViewBag.UpsertLog</pre>
+    </div>
+</div>
